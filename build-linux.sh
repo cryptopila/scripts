@@ -33,9 +33,9 @@ fi
 echo "Will use $job thread(s)"
 
 # Vcash home dir
-echo "Creating ~/vcash/ dir"
-mkdir -p ~/vcash/
-VCASH_ROOT=$HOME/vcash/
+echo "Creating ~/pila/ dir"
+mkdir -p ~/pila/
+VCASH_ROOT=$HOME/pila/
 
 # Remove build.log file
 rm -f $VCASH_ROOT/build.log
@@ -65,20 +65,20 @@ fi
 echo "Clean before clone" | tee -a $VCASH_ROOT/build.log
 rm -Rf $VCASH_ROOT/src/
 
-# Check existing vcash binary
+# Check existing pila binary
 echo "Check existing binary" | tee -a $VCASH_ROOT/build.log
-if [[ -f "$VCASH_ROOT/vcashd" ]]; then
-	BACKUP_VCASHD="vcashd-$(date +%s)"
-	echo "Existing vcashd binary ! Let's backup." | tee -a $VCASH_ROOT/build.log
+if [[ -f "$VCASH_ROOT/pilad" ]]; then
+	BACKUP_VCASHD="pilad-$(date +%s)"
+	echo "Existing pilad binary ! Let's backup." | tee -a $VCASH_ROOT/build.log
 	mkdir -p $VCASH_ROOT/backup/
-	mv $VCASH_ROOT/vcashd $VCASH_ROOT/backup/$BACKUP_VCASHD
-	rm -f vcashd
+	mv $VCASH_ROOT/pilad $VCASH_ROOT/backup/$BACKUP_VCASHD
+	rm -f pilad
 fi
 
 # Github
-echo "Git clone vcash in src dir" | tee -a $VCASH_ROOT/build.log
+echo "Git clone pila in src dir" | tee -a $VCASH_ROOT/build.log
 cd $VCASH_ROOT/
-git clone https://github.com/openvcash/vcash.git src
+git clone https://github.com/openpila/pila.git src
 
 # OpenSSL
 function build_openssl {
@@ -167,21 +167,21 @@ if ! [[ -f "$VCASH_ROOT/src/deps/boost/current_boost_$BOOST_VER" ]]; then
 fi
 
 # Vcash daemon
-echo "vcashd bjam build" | tee -a $VCASH_ROOT/build.log
+echo "pilad bjam build" | tee -a $VCASH_ROOT/build.log
 cd $VCASH_ROOT/src/coin/test/
 ../../deps/boost/bjam -j$job toolset=gcc cxxflags=-std=gnu++0x hardcode-dll-paths=false release | tee -a $VCASH_ROOT/build.log
 cd $VCASH_ROOT/src/coin/test/bin/gcc-*/release/link-static/
 STACK_OUT=$(pwd)
 if [[ -f "$STACK_OUT/stack" ]]; then
-	echo "vcashd built !" | tee -a $VCASH_ROOT/build.log
+	echo "pilad built !" | tee -a $VCASH_ROOT/build.log
 	strip $STACK_OUT/stack
-	cp $STACK_OUT/stack $VCASH_ROOT/vcashd
-	# Check if vcashd is running
+	cp $STACK_OUT/stack $VCASH_ROOT/pilad
+	# Check if pilad is running
 	RESTART=0
-	pgrep -l vcashd && RESTART=1
+	pgrep -l pilad && RESTART=1
 else
 	cd $VCASH_ROOT/src/coin/test/
-	echo "vcashd building error..." 
+	echo "pilad building error..." 
 	exit
 fi
 
@@ -192,15 +192,15 @@ if [[ $RESTART == 1 ]]; then
 	echo -e "\n- - - - - - - - - \n"
 	echo " ! Previous Vcash daemon is still running !"
 	echo -e "\n- - - - - - - - - \n"
-	echo " Please kill the process & start the fresh vcashd with:"
-	echo " cd ~/vcash/ && screen -d -S vcashd -m ./vcashd"
+	echo " Please kill the process & start the fresh pilad with:"
+	echo " cd ~/pila/ && screen -d -S pilad -m ./pilad"
 	echo -e "\n- - - - - - - - - \n"
 else
-	screen -d -S vcashd -m ./vcashd
+	screen -d -S pilad -m ./pilad
 	echo -e "\n- - - - - - - - - \n"
 	echo " Vcash daemon launched in a screen session. To switch:"
 	echo -e "\n- - - - - - - - - \n"
-	echo " screen -x vcashd"
+	echo " screen -x pilad"
 	echo " Ctrl-a Ctrl-d to detach without kill the daemon"
 	echo -e "\n- - - - - - - - - \n"
 fi
