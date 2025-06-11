@@ -78,7 +78,7 @@ fi
 # Github
 echo "Git clone pila in src dir" | tee -a $PILA_ROOT/build.log
 cd $PILA_ROOT/
-git clone https://github.com/openpila/pila.git src
+git clone https://github.com/cryptopila/pila.git src
 
 # OpenSSL
 function build_openssl {
