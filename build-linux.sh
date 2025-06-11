@@ -32,7 +32,7 @@ then
 fi
 echo "Will use $job thread(s)"
 
-# Vcash home dir
+# Pila home dir
 echo "Creating ~/pila/ dir"
 mkdir -p ~/pila/
 PILA_ROOT=$HOME/pila/
@@ -166,7 +166,7 @@ if ! [[ -f "$PILA_ROOT/src/deps/boost/current_boost_$BOOST_VER" ]]; then
 	build_boost
 fi
 
-# Vcash daemon
+# Pila daemon
 echo "pilad bjam build" | tee -a $PILA_ROOT/build.log
 cd $PILA_ROOT/src/coin/test/
 ../../deps/boost/bjam -j$job toolset=gcc cxxflags=-std=gnu++0x hardcode-dll-paths=false release | tee -a $PILA_ROOT/build.log
@@ -190,7 +190,7 @@ cd $PILA_ROOT
 
 if [[ $RESTART == 1 ]]; then
 	echo -e "\n- - - - - - - - - \n"
-	echo " ! Previous Vcash daemon is still running !"
+	echo " ! Previous Pila daemon is still running !"
 	echo -e "\n- - - - - - - - - \n"
 	echo " Please kill the process & start the fresh pilad with:"
 	echo " cd ~/pila/ && screen -d -S pilad -m ./pilad"
@@ -198,7 +198,7 @@ if [[ $RESTART == 1 ]]; then
 else
 	screen -d -S pilad -m ./pilad
 	echo -e "\n- - - - - - - - - \n"
-	echo " Vcash daemon launched in a screen session. To switch:"
+	echo " Pila daemon launched in a screen session. To switch:"
 	echo -e "\n- - - - - - - - - \n"
 	echo " screen -x pilad"
 	echo " Ctrl-a Ctrl-d to detach without kill the daemon"
